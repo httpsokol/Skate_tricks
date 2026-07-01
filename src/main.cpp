@@ -13,9 +13,13 @@ int16_t acc[3], gyro[3];
 
 // tablice i zmienne pomocnicze do usuniecia offsetu akcelerometru i zyroskopu
 int16_t acc_offset[3], gyro_offset[3]; 
-long acc_offset_x, acc_offset_y, acc_offset_z, gyro_offset_x, gyro_offset_y, gyro_offset_z;
+long acc_offset_x = 0, acc_offset_y = 0, acc_offset_z = 0, gyro_offset_x = 0, gyro_offset_y = 0, gyro_offset_z = 0;
 
-int calibration_samples = 200;
+int calibration_samples = 500;
+
+// zmienne wysylane potem do pythona 
+int16_t ax, ay, az, gx, gy, gz;
+
 
 void setup() {
   Serial.begin(115200);   // prędkość komunikacji 115200 bitow na sekunde
@@ -40,7 +44,7 @@ void setup() {
     gyro_offset_x += gyro_offset[0];
     gyro_offset_y += gyro_offset[1];
     gyro_offset_z += gyro_offset[2];
-    delay(10);
+    delay(5);
   }
   acc_offset_x /= calibration_samples;
   acc_offset_y /= calibration_samples;
@@ -56,16 +60,24 @@ void loop() {
   bmi160.getAccelData(acc);
   bmi160.getGyroData(gyro);
 
-  // wyswietlanie danych
-  Serial.print("ACC: ");
-  Serial.print(acc[0] - acc_offset_x); Serial.print(" ");
-  Serial.print(acc[1] - acc_offset_y); Serial.print(" ");
-  Serial.println(acc[2] - acc_offset_z);
+  ax = acc[0] - acc_offset_x;
+  ay = acc[1] - acc_offset_y;
+  az = acc[2] - acc_offset_z;
+  gx = gyro[0] - gyro_offset_x;
+  gy = gyro[1] - gyro_offset_y;
+  gz = gyro[2] - gyro_offset_z;
 
-  Serial.print("GYRO: ");
-  Serial.print(gyro[0] - gyro_offset_x); Serial.print(" ");
-  Serial.print(gyro[1] - gyro_offset_y); Serial.print(" ");
-  Serial.println(gyro[2] - gyro_offset_z);
-
+  
+  Serial.print(ax);
+  Serial.print(",");
+  Serial.print(ay);
+  Serial.print(",");
+  Serial.print(az);
+  Serial.print(",");
+  Serial.print(gx);
+  Serial.print(",");
+  Serial.print(gy);
+  Serial.print(",");
+  Serial.println(gz); // potrzebuje znaku \n, bo readline w python czyta do znaku \n
   delay(100); 
 }
