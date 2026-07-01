@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../../../../esp32/blagam"
+		},
+		{
+			"name": "inze",
+			"path": "."
+		}
+	],
+	"settings": {}
+}
